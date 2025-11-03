@@ -1,0 +1,6 @@
+@EnvioRapidoApi_HostAddress = http://localhost:5145
+
+GET {{EnvioRapidoApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

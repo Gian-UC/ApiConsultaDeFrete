@@ -1,0 +1,90 @@
+# ============================
+# .NET / C# / VS Code
+# ============================
+
+# Compiled binaries
+bin/
+obj/
+out/
+*.dll
+*.exe
+*.pdb
+*.mdb
+
+# VS / VS Code files
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vs/
+
+# Rider
+.idea/
+
+# Logs
+*.log
+
+# User-specific files
+*.swp
+*.tmp
+*.bak
+*.orig
+*.db
+
+# Dotnet user secrets (⚠️ mantém fora do Git)
+secrets.json
+
+# Config files with secrets
+appsettings.Development.json
+appsettings.Local.json
+
+# Coverage / testing
+coverage/
+*.coverage
+*.coveragexml
+TestResult.xml
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Packages
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+.nuget/
+
+# Publish output
+publish/
+wwwroot/
+node_modules/
+
+# Env files (caso adicione)
+.env
+.env.*
+
+# Temporary files
+*.cache
+*.tmp
+*.temp
+*.pid
+
+# ============================
+# Custom (Melhor Envio API)
+# ============================
+
+# Nunca subir o token local do Melhor Envio
+**/UserSecrets/
+**/usersecrets/
+**/secrets.json
+
+# Build local
+/EnvioRapidoApi/bin/
+/EnvioRapidoApi/obj/
+
+# Auto gerados do Swagger
+/SwaggerDoc/
+swagger.json
+swagger.yaml
