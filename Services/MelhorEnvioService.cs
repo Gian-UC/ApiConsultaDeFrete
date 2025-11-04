@@ -15,7 +15,7 @@ namespace EnvioRapidoApi.Services
             _token = config["MelhorEnvio:Token"] ?? throw new Exception("Token do Melhor Envio não configurado!");
         }
 
-        public async Task<string> CalcularFreteAsync(string cepOrigem, string cepDestino, decimal peso, decimal altura, decimal largura, decimal comprimento)
+        public async Task<decimal> CalcularFreteAsync(string cepOrigem, string cepDestino, decimal peso, decimal altura, decimal largura, decimal comprimento)
         {
             var requestBody = new
             {
@@ -47,7 +47,20 @@ namespace EnvioRapidoApi.Services
                 throw new Exception($"Erro ao calcular frete: {error}");
             }
 
-            return await response.Content.ReadAsStringAsync();
+            var jsonString = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var jsonDoc = JsonDocument.Parse(jsonString);
+
+            // pega o primeiro preço retornado
+            var firstOption = jsonDoc.RootElement.EnumerateArray().FirstOrDefault();
+            if (firstOption.ValueKind == JsonValueKind.Undefined)
+                throw new Exception("Nenhum valor de frete retornado pela API.");
+
+            var priceString = firstOption.GetProperty("price").GetString();
+            if (decimal.TryParse(priceString, out decimal valorFrete))
+                return valorFrete;
+
+            throw new Exception("Não foi possível converter o valor do frete.");
         }
     }
 }
