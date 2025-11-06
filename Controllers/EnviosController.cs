@@ -32,11 +32,13 @@ namespace EnvioRapidoApi.Controllers
 
 
         /// <summary>
-        /// Calcula o valor do frete, registra o envio no banco e publica no RabbitMQ.
+        /// Calcula o valor do frete, salva o envio no banco e publica no RabbitMQ.
         /// </summary>
-        /// <param name="dto">Dados necessários para calcular o frete.</param>
-        /// <returns>Dados do envio salvo + valor de frete calculado.</returns>
+        /// <param name="dto">Dados do envio.</param>
+        /// <returns>Retorna 202 Accepted indicando processamento assíncrono.</returns>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post([FromBody] EnvioDTO dto)
         {
             if (string.IsNullOrEmpty(dto.OrigemCep) || string.IsNullOrEmpty(dto.DestinoCep))
@@ -99,9 +101,11 @@ namespace EnvioRapidoApi.Controllers
         /// <summary>
         /// Consulta um envio específico pelo ID.
         /// </summary>
-        /// <param name="id">ID do envio a ser consultado.</param>
-        /// <returns>Dados do envio ou 404 caso não exista.</returns>
+        /// <param name="id">ID do envio registrado.</param>
+        /// <returns>Retorna os detalhes completos do envio.</returns>
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(int id)
         {
             var envio = await _envioRepository.BuscarPorIdAsync(id);
@@ -127,13 +131,15 @@ namespace EnvioRapidoApi.Controllers
 
 
         /// <summary>
-        /// Exclui um envio já registrado no banco.
-        /// Requer autenticação JWT.
+        /// Exclui um envio do banco de dados. Requer autenticação.
         /// </summary>
-        /// <param name="id">ID do envio a excluir.</param>
-        /// <returns>Status da operação.</returns>
+        /// <param name="id">ID do envio a ser removido.</param>
+        /// <returns>Mensagem de confirmação ou erro.</returns>
         [Authorize]
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Delete(int id)
         {
             bool removido = await _envioRepository.RemoverAsync(id);
@@ -146,8 +152,10 @@ namespace EnvioRapidoApi.Controllers
 
 
         /// <summary>
-        /// Verifica se o envio existe sem retornar o corpo da resposta.
+        /// Verifica se o envio existe sem retornar corpo de resposta.
         /// </summary>
+        /// <param name="id">ID do envio.</param>
+        /// <returns>Retorna 204 se existir ou 404 se não existir.</returns>
         [HttpHead("{id}")]
         public async Task<IActionResult> Head(int id)
         {
@@ -161,8 +169,9 @@ namespace EnvioRapidoApi.Controllers
 
 
         /// <summary>
-        /// Informa os métodos suportados para /api/envios.
+        /// Informa os métodos suportados para esse endpoint.
         /// </summary>
+        /// <returns>Lista de métodos permitidos.</returns>
         [HttpOptions]
         public IActionResult Options()
         {

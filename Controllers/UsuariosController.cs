@@ -17,6 +17,12 @@ namespace EnvioRapidoApi.Controllers
             _authService = authService;
         }
 
+
+        /// <summary>
+        /// Realiza login do usuário e gera token JWT.
+        /// </summary>
+        /// <param name="dto">Email e senha.</param>
+        /// <returns>Token JWT para autenticação.</returns>
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginDTO dto)
         {
@@ -27,6 +33,11 @@ namespace EnvioRapidoApi.Controllers
             return Ok(new { token });
         }
 
+        /// <summary>
+        /// Cadastra um novo usuário no sistema.
+        /// </summary>
+        /// <param name="dto">Dados de criação do usuário.</param>
+        /// <returns>Mensagem de sucesso.</returns>
         [HttpPost("cadastro")]
         public IActionResult Cadastrar([FromBody] Usuario usuario)
         {
@@ -37,6 +48,12 @@ namespace EnvioRapidoApi.Controllers
             return Ok(new { mensagem = "Usuário cadastrado com sucesso!" });
         }
 
+
+        /// <summary>
+        /// Remove um usuário pelo email.
+        /// </summary>
+        /// <param name="email">Email do usuário.</param>
+        /// <returns>Mensagem de confirmação.</returns>
         [Authorize]
         [HttpDelete("{email}")]
         public IActionResult Excluir(string email)
