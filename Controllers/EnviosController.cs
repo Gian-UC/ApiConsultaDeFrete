@@ -30,6 +30,12 @@ namespace EnvioRapidoApi.Controllers
             _rabbitMqService = rabbitMqService;
         }
 
+
+        /// <summary>
+        /// Calcula o valor do frete, registra o envio no banco e publica no RabbitMQ.
+        /// </summary>
+        /// <param name="dto">Dados necessários para calcular o frete.</param>
+        /// <returns>Dados do envio salvo + valor de frete calculado.</returns>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] EnvioDTO dto)
         {
@@ -41,6 +47,10 @@ namespace EnvioRapidoApi.Controllers
 
             if (!origemValida || !destinoValido)
                 return BadRequest("CEP inválido.");
+
+            // 🆕 Status 409 - envio duplicado
+            if (await _envioRepository.ExisteEnvioIgualAsync(dto.OrigemCep, dto.DestinoCep, dto.Peso))
+                return Conflict(new { mensagem = "Já existe um envio igual cadastrado." }); // 409    
 
             // 💰 Calcula o frete antes de salvar
             decimal valorFrete = await _melhorEnvioService.CalcularFreteAsync(
@@ -63,7 +73,6 @@ namespace EnvioRapidoApi.Controllers
                 ValorFrete = valorFrete
             };
 
-
             await _envioRepository.SalvarAsync(envio);
 
             var mensagem = new
@@ -77,10 +86,21 @@ namespace EnvioRapidoApi.Controllers
 
             _rabbitMqService.PublicarMensagem(mensagem);
 
-            return CreatedAtAction(nameof(GetById), new { id = envio.Id }, envio);
+            // 🆕 Status 202 - aceito para processamento
+            return Accepted(new
+            {
+                mensagem = "Envio registrado e enviado para processamento.",
+                envio.Id,
+                envio.ValorFrete
+            });
         }
 
 
+        /// <summary>
+        /// Consulta um envio específico pelo ID.
+        /// </summary>
+        /// <param name="id">ID do envio a ser consultado.</param>
+        /// <returns>Dados do envio ou 404 caso não exista.</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -105,6 +125,14 @@ namespace EnvioRapidoApi.Controllers
             return Ok(resposta);
         }
 
+
+        /// <summary>
+        /// Exclui um envio já registrado no banco.
+        /// Requer autenticação JWT.
+        /// </summary>
+        /// <param name="id">ID do envio a excluir.</param>
+        /// <returns>Status da operação.</returns>
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -114,6 +142,32 @@ namespace EnvioRapidoApi.Controllers
                 return NotFound(new { mensagem = "Envio não encontrado." });
 
             return Ok(new { mensagem = "Envio excluído com sucesso!" });
+        }
+
+
+        /// <summary>
+        /// Verifica se o envio existe sem retornar o corpo da resposta.
+        /// </summary>
+        [HttpHead("{id}")]
+        public async Task<IActionResult> Head(int id)
+        {
+            var envio = await _envioRepository.BuscarPorIdAsync(id);
+
+            if (envio == null)
+                return NotFound(); // 404
+
+            return NoContent(); // 204 → Existe, mas não retorna corpo
+        }
+
+
+        /// <summary>
+        /// Informa os métodos suportados para /api/envios.
+        /// </summary>
+        [HttpOptions]
+        public IActionResult Options()
+        {
+            Response.Headers.Add("Allow", "GET, POST, DELETE, HEAD, OPTIONS");
+            return Ok(); // 200
         }
 
     }

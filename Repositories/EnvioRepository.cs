@@ -1,5 +1,6 @@
 using EnvioRapidoApi.Data;
 using EnvioRapidoApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EnvioRapidoApi.Repositories
 {
@@ -33,6 +34,16 @@ namespace EnvioRapidoApi.Repositories
             _context.Envios.Remove(envio);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<bool> ExisteEnvioIgualAsync(string origemCep, string destinoCep, decimal peso)
+        {
+            return await _context.Envios
+                .AnyAsync(e =>
+                    e.OrigemCep == origemCep &&
+                    e.DestinoCep == destinoCep &&
+                    e.Peso == peso
+                );
         }
     }
 }

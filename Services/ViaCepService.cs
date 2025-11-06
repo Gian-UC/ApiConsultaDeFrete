@@ -13,7 +13,7 @@ namespace EnvioRapidoApi.Services
 
         public async Task<bool> ValidarCepAsync(string cep)
         {
-            var response = await _httpClient.GetAsync($"https://viacep.com.br/ws/{cep}/json/");
+            var response = await _httpClient.GetAsync($"http://viacep.com.br/ws/{cep}/json/");
             
             if (!response.IsSuccessStatusCode)
                 return false;

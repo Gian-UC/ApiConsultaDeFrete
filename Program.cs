@@ -20,10 +20,14 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "EnvioRapidoApi",
+        Title = "Envio Rapido Api",
         Version = "v1",
-        Description = "API para cadastro e cálculo de fretes via Melhor Envio 💙"
+        Description = "API para cadastro e cálculo de fretes via Melhor Envio + RabbitMQ + MySQL"
     });
+
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
 
     // 🔒 Configuração de autenticação JWT
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
