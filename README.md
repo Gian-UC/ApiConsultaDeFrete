@@ -71,12 +71,9 @@ ValorFrete	                                decimal	                             
 🐇 Mensageria (RabbitMQ)
 A cada envio cadastrado, uma mensagem é publicada na fila:
 
-Copiar código
 fila_calculo_frete
 Exemplo da mensagem:
 
-json
-Copiar código
 {
   "Id": 5,
   "OrigemCep": "01001000",
@@ -88,12 +85,10 @@ Copiar código
 🚀 Como Executar
 1. Clonar o repositório
 
-Copiar código
 git clone https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git
 
 2. Configurar o appsettings.json
 
-Copiar código
 "ConnectionStrings": {
   "DefaultConnection": "server=localhost;port=3306;database=enviorapido;user=root;password=SENHA"
 },
@@ -102,12 +97,12 @@ Copiar código
 }
 3. Criar o banco de dados
 
-Copiar código
 dotnet ef database update
+
 4. Rodar a aplicação
-Copiar código
+
 dotnet run
+
 E acessar:
 
-Copiar código
 https://localhost:5145/swagger
