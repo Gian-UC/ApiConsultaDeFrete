@@ -92,15 +92,17 @@ GET /api/envios/{id}
 
 Retorna:
 
-``{
-  "id": 5,
-  "origemCep": "01001000",
-  "destinoCep": "30140071",
-  "peso": 2,
-  "valorFrete": "R$ 23,72",
-  "status": "CRIADO",
-  "dataConsulta": "05/11/2025 16:22"
-}``
+
+
+```{  
+  "Id": 1,
+  "OrigemCep": "01001000",
+  "DestinoCep": "30140071",
+  "ValorFrete": 23.72,
+  "Data": "2025-11-04 16:12"
+}
+```
+
 
 🧪 Testes Unitários
 
@@ -126,22 +128,28 @@ fila_calculo_frete
 
 Mensagem publicada:
 
-``{
+```{
   "Id": 1,
   "OrigemCep": "01001000",
   "DestinoCep": "30140071",
   "ValorFrete": 23.72,
   "Data": "2025-11-04 16:12"
-}``
+}
+```
 
-🛠 Tecnologias Utilizadas
-Tecnologia	Uso
-.NET 8	API principal
-Entity Framework Core	ORM e Migrations
-MySQL	Banco de dados
-RabbitMQ	Mensageria
-xUnit + Moq	Testes unitários
-Swagger	Documentação interativa
+### 🛠️ Tecnologias Utilizadas
+
+<p align="center">
+  <img src="https://img.shields.io/badge/.NET%208-512BD4?style=for-the-badge&logo=dotnet&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Entity%20Framework%20Core-6DB33F?style=for-the-badge&logo=ef&logoColor=white"/>
+  <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white"/>
+  <img src="https://img.shields.io/badge/RabbitMQ-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black"/>
+  <img src="https://img.shields.io/badge/xUnit-5C2D91?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Moq-000000?style=for-the-badge&logo=mocha&logoColor=white"/>
+</p>
+
+
 
 Desenvolvido por:
 
