@@ -85,7 +85,7 @@ Exemplo da mensagem:
 🚀 Como Executar
 1. Clonar o repositório
 
-git clone https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git
+git clone [https://github.com/Gian-UC/ApiConsultaDeFrete.git]
 
 2. Configurar o appsettings.json
 
