@@ -1,108 +1,148 @@
 # 🚚 Envio Rápido API
 
-API REST desenvolvida para cálculo e gerenciamento de envios, utilizando:
-- Autenticação JWT
-- Consulta de CEP via ViaCEP
-- Cálculo de frete via Melhor Envio
-- Persistência em MySQL
-- Publicação de mensagens no RabbitMQ
+![Banner](https://capsule-render.vercel.app/api?type=waving&color=0:0d0d0d,100:1a73e8&height=260&section=header&text=Envio%20Rápido%20API&fontSize=48&fontAlignY=38&animation=fadeIn&fontColor=ffffff&desc=Frete%20%7C%20RabbitMQ%20%7C%20JWT%20%7C%20Gamer%20Style&descSize=16&descAlignY=55)
+
+<p align="center">
+  <img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet" />
+  <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white" />
+  <img src="https://img.shields.io/badge/RabbitMQ-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white" />
+  <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" />
+  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tests-xUnit-5C2D91?style=for-the-badge" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/STATUS-✅%20Concluído-blue?style=for-the-badge">
+</p>
+
+
+# 🚀 Envio Rápido API
+
+API para cálculo e gerenciamento de envios, incluindo autenticação, integração com serviços externos, mensageria e testes unitários.  
+Projeto desenvolvido com foco em **boas práticas**, **escalabilidade** e **arquitetura limpa**.
 
 ---
 
-## 🧠 Tecnologias Utilizadas
+## 📦 Funcionalidades
 
-| Tecnologia | Versão | Finalidade |
-|-----------|--------|------------|
-| .NET 8    | SDK    | Backend/API |
-| MySQL     | 8+     | Banco de dados relacional |
-| Entity Framework Core | 8+ | ORM para persistência |
-| RabbitMQ  | 3.x    | Mensageria assíncrona |
-| Swagger UI | - | Documentação interativa |
+| Funcionalidade | Descrição |
+|---|---|
+| Cadastro e Login de Usuário | Gera **JWT** para autenticação |
+| Cadastro de Envios | Valida CEP, calcula frete e salva no banco |
+| Integração com ViaCEP | Validação de endereço e formato do CEP |
+| Integração com MelhorEnvio | Cálculo real de frete |
+| Publicação no RabbitMQ | Notificação assíncrona para processamento |
+| Consulta de Envio | Retorna valores formatados e status |
+| Exclusão de Envios | Protegido com **JWT** |
+| Testes Unitários | Cobertura mínima de 80% com **xUnit + Moq** |
 
 ---
 
-## 🔐 Autenticação
-A API utiliza **JWT** para autenticação e autorização dos endpoints protegidos.
+## 🧱 Arquitetura do Projeto:
+|-----------------------------|
+APICONSULTAFRETE/
+├─ Controllers/
+├─ DTOs/
+├─ Models/
+├─ Services/
+├─ Repositories/
+├─ Data/
+├─ Migrations/
+├─ Program.cs
+└─ EnvioRapidoApi.Tests/
+---------------------------------------------------------------------------------
+- **Controllers** → Camada responsável por receber e responder requisições HTTP  
+- **Services** → Regras de negócio, integrações externas  
+- **Repositories** → CRUD e persistência com Entity Framework  
+- **Tests** → Testes unitários isolando comportamento
 
-### Gerar Token:
+---
+
+## 🔐 Autenticação:
+
+O login retorna um **JWT**, utilizado para acessar rotas protegidas.
+
+### Login:
+
 POST /api/usuarios/login
 
-Copiar código
-Corpo:
-json
-{
-  "email": "seuemail@email.com",
-  "senha": "suasenha"
-}
+### Enviar Token no Swagger
+Clique em **Authorize** → cole:
 
-Usar o Token no Swagger
-Clique no botão Authorize e insira:
+Bearer SEU_TOKEN_AQUI
 
-Bearer + TOKEN GERADO pelo Login
+---
 
-📦 Endpoints Principais
-👤 Usuários
+## 🚚 Cadastro de Envio
 
-Método	Rota	Descrição:
+POST /api/envios
 
-POST	/api/usuarios/cadastro	Cadastra um novo usuário
-POST	/api/usuarios/login	Autentica e retorna token JWT
-DELETE	/api/usuarios/{email}	Exclui usuário (💡 Requer JWT)
+### Fluxo:
+1. Valida CEP com **ViaCEP**
+2. Calcula frete com **MelhorEnvio**
+3. Salva envio no **MySQL**
+4. Publica notificação no **RabbitMQ**
+5. Responde com **202 Accepted**
 
-🚚 Envios
-Método	Rota	Descrição:
+---
 
-POST	/api/envios	Realiza o cálculo, salva no banco e publica no RabbitMQ
-GET	/api/envios/{id}	Busca um envio pelo ID
-DELETE	/api/envios/{id}	Remove um envio do banco
+## 📬 Consulta de Envio
 
-🗄 Estrutura de Banco (Tabela envios)
+GET /api/envios/{id}
 
-Campo	                                      Tipo	                                                                          Descrição
-Id	                                        int	                                                                            Identificador único
-OrigemCep	                                  varchar	                                                                        CEP do remetente
-DestinoCep	                                varchar	                                                                        CEP do destinatário
-Peso	                                      decimal	                                                                        Peso da encomenda
-Altura	                                    decimal	                                                                        Altura da embalagem
-Largura	                                    decimal	                                                                        Largura da embalagem
-Comprimento	                                decimal	                                                                        Comprimento da embalagem
-ValorFrete	                                decimal	                                                                        Valor calculado da entrega
+Retorna:
 
-🐇 Mensageria (RabbitMQ)
-A cada envio cadastrado, uma mensagem é publicada na fila:
+``{
+  "id": 5,
+  "origemCep": "01001000",
+  "destinoCep": "30140071",
+  "peso": 2,
+  "valorFrete": "R$ 23,72",
+  "status": "CRIADO",
+  "dataConsulta": "05/11/2025 16:22"
+}``
+
+🧪 Testes Unitários
+
+Executar:
+
+dotnet test
+
+Cobertura:
+
+dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
+
+Tecnologias:
+
+xUnit
+Moq
+Coverlet
+
+🐇 RabbitMQ
+
+Fila utilizada:
 
 fila_calculo_frete
-Exemplo da mensagem:
 
-{
-  "Id": 5,
+Mensagem publicada:
+
+``{
+  "Id": 1,
   "OrigemCep": "01001000",
   "DestinoCep": "30140071",
-  "ValorFrete": 37.50,
-  "Data": "2025-11-04 16:02:18"
-}
+  "ValorFrete": 23.72,
+  "Data": "2025-11-04 16:12"
+}``
 
-🚀 Como Executar
-1. Clonar o repositório
+🛠 Tecnologias Utilizadas
+Tecnologia	Uso
+.NET 8	API principal
+Entity Framework Core	ORM e Migrations
+MySQL	Banco de dados
+RabbitMQ	Mensageria
+xUnit + Moq	Testes unitários
+Swagger	Documentação interativa
 
-git clone [https://github.com/Gian-UC/ApiConsultaDeFrete.git]
+Desenvolvido por:
 
-2. Configurar o appsettings.json
-
-"ConnectionStrings": {
-  "DefaultConnection": "server=localhost;port=3306;database=enviorapido;user=root;password=SENHA"
-},
-"MelhorEnvio": {
-  "Token": "SEU_TOKEN_AQUI"
-}
-3. Criar o banco de dados
-
-dotnet ef database update
-
-4. Rodar a aplicação
-
-dotnet run
-
-E acessar:
-
-https://localhost:5145/swagger
+Giancarlo Salomone
