@@ -85,9 +85,24 @@ namespace EnvioRapidoApi.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var envio = await _envioRepository.BuscarPorIdAsync(id);
+
             if (envio == null)
-                return NotFound(new { msg = "Envio não encontrado." });
-            return Ok(envio);
+                return NotFound(new { mensagem = "Envio não encontrado." });
+
+            var resposta = new
+            {
+                envio.Id,
+                envio.OrigemCep,
+                envio.DestinoCep,
+                envio.Peso,
+                envio.Altura,
+                envio.Largura,
+                envio.Comprimento,
+                ValorFrete = envio.ValorFrete.ToString("C2"), // 💰 formatado em moeda
+                DataConsulta = DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+            };
+
+            return Ok(resposta);
         }
 
         [HttpDelete("{id}")]

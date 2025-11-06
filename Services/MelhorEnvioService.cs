@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Globalization;
 
 namespace EnvioRapidoApi.Services
 {
@@ -57,8 +58,10 @@ namespace EnvioRapidoApi.Services
                 throw new Exception("Nenhum valor de frete retornado pela API.");
 
             var priceString = firstOption.GetProperty("price").GetString();
-            if (decimal.TryParse(priceString, out decimal valorFrete))
-                return valorFrete;
+
+            decimal valorFrete = decimal.Parse(priceString, CultureInfo.InvariantCulture);
+
+            return valorFrete;
 
             throw new Exception("Não foi possível converter o valor do frete.");
         }
