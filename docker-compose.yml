@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql_envio
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: enviorapido
+      TZ: America/Sao_Paulo
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_envio
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  api:
+    build: .
+    container_name: envio_api
+    restart: always
+    depends_on:
+      - mysql
+      - rabbitmq
+    ports:
+      - "5145:5145"
+    environment:
+      TZ: America/Sao_Paulo
+      ASPNETCORE_URLS: "http://0.0.0.0:5145"
+      ConnectionStrings__DefaultConnection: "Server=mysql;Database=enviorapido;User=root;Password=root;"
+      RabbitMQ__Host: "rabbitmq"
+    volumes:
+      - ./secrets/jwt_key.txt:/run/secrets/jwt_key:ro
+      - ./secrets/melhorenvio_token.txt:/run/secrets/melhorenvio_token:ro
+
+volumes:
+  db_data:

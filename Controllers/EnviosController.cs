@@ -6,7 +6,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using EnvioRapidoApi.Repositories;
 using EnvioRapidoApi.Data;
-
+using System.Globalization; 
 
 namespace EnvioRapidoApi.Controllers
 {
@@ -122,7 +122,7 @@ namespace EnvioRapidoApi.Controllers
                 envio.Altura,
                 envio.Largura,
                 envio.Comprimento,
-                ValorFrete = envio.ValorFrete.ToString("C2"), // 💰 formatado em moeda
+                valorFrete = envio.ValorFrete.ToString("C", new CultureInfo("pt-BR")), // 💰 formatado em moeda
                 DataConsulta = DateTime.Now.ToString("dd/MM/yyyy HH:mm")
             };
 

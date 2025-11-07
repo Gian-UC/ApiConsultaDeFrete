@@ -13,7 +13,12 @@ namespace EnvioRapidoApi.Services
         public MelhorEnvioService(HttpClient httpClient, IConfiguration config)
         {
             _httpClient = httpClient;
-            _token = config["MelhorEnvio:Token"] ?? throw new Exception("Token do Melhor Envio não configurado!");
+
+            _token = config["MelhorEnvio:Token"] 
+                ?? throw new Exception("Token do Melhor Envio não configurado!");
+
+            // Define a base URL apenas uma vez (boa prática)
+            _httpClient.BaseAddress = new Uri("https://sandbox.melhorenvio.com.br/api/v2/");
         }
 
         public async Task<decimal> CalcularFreteAsync(string cepOrigem, string cepDestino, decimal peso, decimal altura, decimal largura, decimal comprimento)
@@ -34,36 +39,37 @@ namespace EnvioRapidoApi.Services
                 }
             };
 
-            var json = JsonSerializer.Serialize(requestBody);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            using var request = new HttpRequestMessage(HttpMethod.Post, "me/shipment/calculate")
+            {
+                Content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json")
+            };
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-            _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            var response = await _httpClient.PostAsync("https://sandbox.melhorenvio.com.br/api/v2/me/shipment/calculate", content);
+            var response = await _httpClient.SendAsync(request);
 
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Erro ao calcular frete: {error}");
+                throw new Exception($"Erro ao calcular frete (HTTP {response.StatusCode}): {error}");
             }
 
             var jsonString = await response.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var jsonDoc = JsonDocument.Parse(jsonString);
 
-            // pega o primeiro preço retornado
             var firstOption = jsonDoc.RootElement.EnumerateArray().FirstOrDefault();
             if (firstOption.ValueKind == JsonValueKind.Undefined)
-                throw new Exception("Nenhum valor de frete retornado pela API.");
+                throw new Exception("Nenhum valor de frete retornado pela API do Melhor Envio.");
 
-            var priceString = firstOption.GetProperty("price").GetString();
+            if (!firstOption.TryGetProperty("price", out var priceElement))
+                throw new Exception("Resposta da API não contém o campo 'price'.");
 
-            decimal valorFrete = decimal.Parse(priceString, CultureInfo.InvariantCulture);
+            var priceString = priceElement.GetString();
+            if (!decimal.TryParse(priceString, NumberStyles.Any, CultureInfo.InvariantCulture, out var valorFrete))
+                throw new Exception($"Não foi possível converter o valor do frete: {priceString}");
 
             return valorFrete;
-
-            throw new Exception("Não foi possível converter o valor do frete.");
         }
     }
 }

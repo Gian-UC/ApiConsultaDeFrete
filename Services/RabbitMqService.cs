@@ -12,7 +12,10 @@ namespace EnvioRapidoApi.Services
 
         public RabbitMqService()
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            var factory = new ConnectionFactory()
+            {
+                HostName = Environment.GetEnvironmentVariable("RabbitMQ__Host") ?? "rabbitmq"
+            };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
 
@@ -23,7 +26,7 @@ namespace EnvioRapidoApi.Services
                                  arguments: null);
         }
 
-           public void PublicarMensagem(object mensagem)
+        public void PublicarMensagem(object mensagem)
         {
             var json = JsonSerializer.Serialize(mensagem);
             var body = Encoding.UTF8.GetBytes(json);

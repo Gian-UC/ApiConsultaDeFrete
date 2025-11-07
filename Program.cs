@@ -9,21 +9,55 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ✅ Lendo chave do user-secrets corretamente
-var jwtKey = builder.Configuration["Jwt:Key"];
-if (string.IsNullOrWhiteSpace(jwtKey))
-    throw new Exception("JWT Key não está configurada. Use 'dotnet user-secrets set \"Jwt:Key\" \"sua-chave\"'.");
+// ✅ Adiciona appsettings e variáveis de ambiente
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+builder.Configuration.AddEnvironmentVariables();
 
-var key = Encoding.UTF8.GetBytes(jwtKey);
-if (key.Length < 32)
-    throw new Exception("JWT Key precisa ter pelo menos 256 bits.");
+// ======================================================================
+// 🔒 Função para ler segredos de forma segura
+static string ReadSecret(string filePath, string envVar, IConfiguration config, string configKey)
+{
+    // 1) Se veio de arquivo montado via Docker secrets
+    if (File.Exists(filePath))
+        return File.ReadAllText(filePath).Trim();
+
+    // 2) Se veio de variável de ambiente
+    var fromEnv = Environment.GetEnvironmentVariable(envVar);
+    if (!string.IsNullOrWhiteSpace(fromEnv))
+        return fromEnv.Trim();
+
+    // 3) Se veio do appsettings / secrets development
+    var fromConfig = config[configKey];
+    if (!string.IsNullOrWhiteSpace(fromConfig))
+        return fromConfig.Trim();
+
+    return string.Empty;
+}
+// ======================================================================
+
+// ✅ Carregar JWT Key com fallback seguro
+var jwtKeyRaw = ReadSecret("/run/secrets/jwt_key", "Jwt__Key", builder.Configuration, "Jwt:Key");
+if (string.IsNullOrWhiteSpace(jwtKeyRaw))
+    throw new Exception("JWT Key não configurada!");
+
+var jwtKeyBytes = Encoding.UTF8.GetBytes(jwtKeyRaw);
+if (jwtKeyBytes.Length < 32)
+    throw new Exception("JWT Key precisa ter 256 bits (mínimo 32 bytes).");
+
+// ✅ Carregar Token do Melhor Envio
+var melhorEnvioToken = ReadSecret("/run/secrets/melhorenvio_token", "MelhorEnvio__Token", builder.Configuration, "MelhorEnvio:Token");
+if (string.IsNullOrWhiteSpace(melhorEnvioToken))
+    throw new Exception("Token do Melhor Envio não configurado!");
+
+// ✅ Torna token visível para injection normal
+builder.Configuration["MelhorEnvio:Token"] = melhorEnvioToken;
 
 // ✅ MySQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// ✅ Swagger com Auth
+// ✅ Swagger + Bearer JWT
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -43,7 +77,7 @@ builder.Services.AddSwaggerGen(options =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
         In = ParameterLocation.Header,
-        Description = "Digite: **Bearer** + espaço + seu  token JWT. \n\nExemplo: `Bearer eyJhbGci0iJIUzI1NiIsInR5cCI6IkpXVCJ9...`"
+        Description = "Digite: Bearer {seu_token}"
     });
 
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -75,13 +109,13 @@ builder.Services.AddAuthentication(options =>
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
+        IssuerSigningKey = new SymmetricSecurityKey(jwtKeyBytes),
         ValidateIssuer = false,
         ValidateAudience = false
     };
 });
 
-// ✅ DI
+// ✅ Injeção de dependência
 builder.Services.AddScoped<EnvioRepository>();
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<RabbitMqService>();
@@ -89,17 +123,13 @@ builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddHttpClient<ViaCepService>();
 builder.Services.AddHttpClient<MelhorEnvioService>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

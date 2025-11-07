@@ -79,6 +79,8 @@ node_modules/
 **/UserSecrets/
 **/usersecrets/
 **/secrets.json
+secrets/
+.env
 
 # Build local
 /EnvioRapidoApi/bin/
