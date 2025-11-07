@@ -71,6 +71,33 @@ Clique em **Authorize** → cole:
 
 Bearer SEU_TOKEN_AQUI
 
+Configuração de Segredos (JWT & Melhor Envio):
+
+Para isso, usamos o User Secrets durante o desenvolvimento.
+
+1) Inicialize o User Secrets no projeto:
+dotnet user-secrets init
+
+2) Configure a chave do JWT:
+dotnet user-secrets set "MelhorEnvio:ApiKey" "sua-chave-ultra-secreta-aqui"
+dotnet user-secrets set "Jwt:Key" "sua-chave-ultra-secreta-aqui"
+
+Recomenda-se usar uma chave com no mínimo 32 caracteres
+Ex: gerada em base64 ou GUID longo.
+
+3) Configure sua chave do Melhor Envio:
+dotnet user-secrets set "MelhorEnvio:ApiKey" "sua_api_key_do_melhor_envio"
+dotnet user-secrets set "Jwt:Key" "SUA_CHAVE_ULTRA_SECRETA_AQUI"
+
+
+5) No appsettings.json, deixe assim:
+"Jwt": {
+  "Key": ""
+},
+"MelhorEnvio": {
+  "ApiKey": ""
+}
+
 ---
 
 ## 🚚 Cadastro de Envio
