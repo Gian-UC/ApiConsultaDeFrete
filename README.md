@@ -152,6 +152,21 @@ Mensagem publicada:
 }
 ```
 
+🐳 Docker — Execução Completa
+1) Crie a pasta de segredos (não vai para o Git)
+/secrets
+   jwt_key.txt
+   melhorenvio_token.txt
+
+2) Suba tudo:
+docker-compose up -d --build
+
+3) Acesse:
+Serviço	URL
+Swagger	http://localhost:5145/swagger
+
+RabbitMQ UI	http://localhost:15673
+
 ### 🛠️ Tecnologias Utilizadas
 
 <p align="center">
