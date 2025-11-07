@@ -9,35 +9,41 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]!);
+// ✅ Lendo chave do user-secrets corretamente
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey))
+    throw new Exception("JWT Key não está configurada. Use 'dotnet user-secrets set \"Jwt:Key\" \"sua-chave\"'.");
 
+var key = Encoding.UTF8.GetBytes(jwtKey);
+if (key.Length < 32)
+    throw new Exception("JWT Key precisa ter pelo menos 256 bits.");
+
+// ✅ MySQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
+// ✅ Swagger com Auth
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Envio Rapido Api",
+        Title = "Envio Rápido API",
         Version = "v1",
-        Description = "API para cadastro e cálculo de fretes via Melhor Envio + RabbitMQ + MySQL"
+        Description = "API para cálculo e envio de fretes com MelhorEnvio + RabbitMQ + MySQL"
     });
 
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     options.IncludeXmlComments(xmlPath);
 
-    // 🔒 Configuração de autenticação JWT
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
-        BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Digite **Bearer** + espaço + seu token JWT.\n\nExemplo: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9`"
+        Description = "Digite: **Bearer** + espaço + seu  token JWT. \n\nExemplo: `Bearer eyJhbGci0iJIUzI1NiIsInR5cCI6IkpXVCJ9...`"
     });
 
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -51,17 +57,17 @@ builder.Services.AddSwaggerGen(options =>
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });
 
+// ✅ Autenticação JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-
 .AddJwtBearer(options =>
 {
     options.RequireHttpsMetadata = false;
@@ -75,15 +81,15 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// ✅ DI
 builder.Services.AddScoped<EnvioRepository>();
+builder.Services.AddScoped<UsuarioRepository>();
+builder.Services.AddScoped<RabbitMqService>();
 builder.Services.AddScoped<AuthService>();
-builder.Services.AddSingleton<UsuarioRepository>();
-builder.Services.AddSingleton<RabbitMqService>();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-// Adiciona os serviços que usam HttpClient
 builder.Services.AddHttpClient<ViaCepService>();
 builder.Services.AddHttpClient<MelhorEnvioService>();
 
