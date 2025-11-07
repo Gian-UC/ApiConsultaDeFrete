@@ -2,24 +2,12 @@
 
 ![Banner](https://capsule-render.vercel.app/api?type=waving&color=0:0d0d0d,100:1a73e8&height=260&section=header&text=Envio%20Rápido%20API&fontSize=48&fontAlignY=38&animation=fadeIn&fontColor=ffffff&desc=Frete%20%7C%20RabbitMQ%20%7C%20JWT%20%7C%20Gamer%20Style&descSize=16&descAlignY=55)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet" />
-  <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white" />
-  <img src="https://img.shields.io/badge/RabbitMQ-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white" />
-  <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" />
-  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" />
-  <img src="https://img.shields.io/badge/Tests-xUnit-5C2D91?style=for-the-badge" />
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/STATUS-✅%20Concluído-blue?style=for-the-badge">
-</p>
+<p align="center"> <img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet" /> <img src="https://img.shields.io/badge/Entity%20Framework%20Core-6DB33F?style=for-the-badge&logo=ef&logoColor=white" /> <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white" /> <img src="https://img.shields.io/badge/RabbitMQ-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white" /> <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" /> <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" /> <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" /> <img src="https://img.shields.io/badge/xUnit-5C2D91?style=for-the-badge" /> </p> <p align="center"> <img src="https://img.shields.io/badge/STATUS-✅%20Concluído-blue?style=for-the-badge"> </p>
 
 
 # 🚀 Envio Rápido API
 
 API para cálculo e gerenciamento de envios, incluindo autenticação, integração com serviços externos, mensageria e testes unitários.  
-Projeto desenvolvido com foco em **boas práticas**, **escalabilidade** e **arquitetura limpa**.
 
 ---
 
@@ -35,6 +23,7 @@ Projeto desenvolvido com foco em **boas práticas**, **escalabilidade** e **arqu
 | Consulta de Envio | Retorna valores formatados e status |
 | Exclusão de Envios | Protegido com **JWT** |
 | Testes Unitários | Cobertura mínima de 80% com **xUnit + Moq** |
+| Deploy e orquestração com Docker |
 
 ---
 
@@ -49,7 +38,6 @@ APICONSULTAFRETE/
 ├─ Data/
 ├─ Migrations/
 ├─ Program.cs
-└─ EnvioRapidoApi.Tests/
 ---------------------------------------------------------------------------------
 - **Controllers** → Camada responsável por receber e responder requisições HTTP  
 - **Services** → Regras de negócio, integrações externas  
