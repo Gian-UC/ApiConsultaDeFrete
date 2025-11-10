@@ -115,11 +115,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
 // ✅ Injeção de dependência
 builder.Services.AddScoped<EnvioRepository>();
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<RabbitMqService>();
 builder.Services.AddScoped<AuthService>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
