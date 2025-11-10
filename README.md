@@ -92,7 +92,7 @@ Agora ela roda:
 | API 5145 | http://localhost:5145/swagger | - |
 |------|-----------|--------|
 
-| RabbitMQ | 15672	http://localhost:15672 | guest - login / senha - guest |
+| RabbitMQ | 15673	http://localhost:15673 | guest - login / senha - guest |
 |------|-----------|--------| 
 
 | MySQL | 3306 | - |
