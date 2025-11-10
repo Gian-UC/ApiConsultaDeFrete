@@ -87,7 +87,7 @@ Agora ela roda:
 - docker compose up -d
 
 
-Serviço	Porta	Acesso:
+## **Serviço	Porta	Acesso:**
 | API 5145 | http://localhost:5145/swagger | - |
 |------|-----------|--------|
 
@@ -100,9 +100,9 @@ Serviço	Porta	Acesso:
 
 ## 🔐 **Token Melhor Envio**
 
-Abra docker-compose.yml e coloque seu token:
+- Abra docker-compose.yml e coloque seu token:
 
-MelhorEnvio__Token: "SEU_TOKEN_AQUI"
+- MelhorEnvio__Token: "SEU_TOKEN_AQUI"
 
 ## 🎮 **Rodando o Front-End**
 
@@ -142,7 +142,7 @@ Os testes utilizam xUnit + Moq.
 - docker-compose down
 
 
-✅ Resumo do que você terá funcionando
+## ✅ **Resumo do que você terá funcionando**
 
 | Funcionalidade | Status |
 |---------------|--------|
