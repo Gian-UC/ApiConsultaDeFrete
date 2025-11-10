@@ -1,186 +1,118 @@
-# 🚚 Envio Rápido API
+<!-- BANNER -->
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=00eaff&height=230&section=header&text=Envio%20Rápido%20API&fontSize=45&fontColor=0d0d0d&animation=twinkling&fontAlignY=40"/>
+</p>
 
-![Banner](https://capsule-render.vercel.app/api?type=waving&color=0:0d0d0d,100:1a73e8&height=260&section=header&text=Envio%20Rápido%20API&fontSize=48&fontAlignY=38&animation=fadeIn&fontColor=ffffff&desc=Frete%20%7C%20RabbitMQ%20%7C%20JWT%20%7C%20Gamer%20Style&descSize=16&descAlignY=55)
-
-<p align="center"> <img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet" /> <img src="https://img.shields.io/badge/Entity%20Framework%20Core-6DB33F?style=for-the-badge&logo=ef&logoColor=white" /> <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white" /> <img src="https://img.shields.io/badge/RabbitMQ-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white" /> <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" /> <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" /> <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" /> <img src="https://img.shields.io/badge/xUnit-5C2D91?style=for-the-badge" /> </p> <p align="center"> <img src="https://img.shields.io/badge/STATUS-✅%20Concluído-blue?style=for-the-badge"> </p>
-
-
-# 🚀 Envio Rápido API
-
-API para cálculo e gerenciamento de envios, incluindo autenticação, integração com serviços externos, mensageria e testes unitários.  
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?color=00eaff&center=true&vCenter=true&width=600&lines=🚚+API+de+Cálculo+de+Frete+com+Melhor+Envio;🐳+Docker+%2B+RabbitMQ+%2B+MySQL;💙+Arquitetura+Profissional+FullStack;🔥+Angular+Hacker+UI+Theme"/>
+</p>
 
 ---
 
-## 📦 Funcionalidades
+## **Visão Geral do Projeto**
 
-| Funcionalidade | Descrição |
-|---|---|
-| Cadastro e Login de Usuário | Gera **JWT** para autenticação |
-| Cadastro de Envios | Valida CEP, calcula frete e salva no banco |
-| Integração com ViaCEP | Validação de endereço e formato do CEP |
-| Integração com MelhorEnvio | Cálculo real de frete |
-| Publicação no RabbitMQ | Notificação assíncrona para processamento |
-| Consulta de Envio | Retorna valores formatados e status |
-| Exclusão de Envios | Protegido com **JWT** |
-| Testes Unitários | Cobertura mínima de 80% com **xUnit + Moq** |
-| Deploy e orquestração com Docker |
+Sistema completo para cálculo de frete utilizando a API **Melhor Envio**, com:
+
+✨ Back-end em **.NET**  
+🐳 Orquestração com **Docker Compose**  
+📦 Banco **MySQL**  
+📡 Mensageria **RabbitMQ**  
+🔐 Autenticação **JWT**  
+🎮 Front-end **Angular** com tema **Hacker Noturno Neon**
 
 ---
 
-## 🧱 Arquitetura do Projeto:
-|-----------------------------|
-APICONSULTAFRETE/
-├─ Controllers/
-├─ DTOs/
-├─ Models/
-├─ Services/
-├─ Repositories/
-├─ Data/
-├─ Migrations/
-├─ Program.cs
----------------------------------------------------------------------------------
-- **Controllers** → Camada responsável por receber e responder requisições HTTP  
-- **Services** → Regras de negócio, integrações externas  
-- **Repositories** → CRUD e persistência com Entity Framework  
-- **Tests** → Testes unitários isolando comportamento
-
----
-
-## 🔐 Autenticação:
-
-O login retorna um **JWT**, utilizado para acessar rotas protegidas.
-
-### Login:
-
-POST /api/usuarios/login
-
-### Enviar Token no Swagger
-Clique em **Authorize** → cole:
-
-Bearer SEU_TOKEN_AQUI
-
-Configuração de Segredos (JWT & Melhor Envio):
-
-Para isso, usamos o User Secrets durante o desenvolvimento.
-
-1) Inicialize o User Secrets no projeto:
-dotnet user-secrets init
-
-2) Configure a chave do JWT:
-dotnet user-secrets set "MelhorEnvio:ApiKey" "sua-chave-ultra-secreta-aqui"
-dotnet user-secrets set "Jwt:Key" "sua-chave-ultra-secreta-aqui"
-
-Recomenda-se usar uma chave com no mínimo 32 caracteres
-Ex: gerada em base64 ou GUID longo.
-
-3) Configure sua chave do Melhor Envio:
-dotnet user-secrets set "MelhorEnvio:ApiKey" "sua_api_key_do_melhor_envio"
-dotnet user-secrets set "Jwt:Key" "SUA_CHAVE_ULTRA_SECRETA_AQUI"
-
-
-5) No appsettings.json, deixe assim:
-"Jwt": {
-  "Key": ""
-},
-"MelhorEnvio": {
-  "ApiKey": ""
-}
-
----
-
-## 🚚 Cadastro de Envio
-
-POST /api/envios
-
-### Fluxo:
-1. Valida CEP com **ViaCEP**
-2. Calcula frete com **MelhorEnvio**
-3. Salva envio no **MySQL**
-4. Publica notificação no **RabbitMQ**
-5. Responde com **202 Accepted**
-
----
-
-## 📬 Consulta de Envio
-
-GET /api/envios/{id}
-
-Retorna:
-
-
-
-```{  
-  "Id": 1,
-  "OrigemCep": "01001000",
-  "DestinoCep": "30140071",
-  "ValorFrete": 23.72,
-  "Data": "2025-11-04 16:12"
-}
-```
-
-
-🧪 Testes Unitários
-
-Executar:
-
-dotnet test
-
-Cobertura:
-
-dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
-
-Tecnologias:
-
-xUnit
-Moq
-Coverlet
-
-🐇 RabbitMQ
-
-Fila utilizada:
-
-fila_calculo_frete
-
-Mensagem publicada:
-
-```{
-  "Id": 1,
-  "OrigemCep": "01001000",
-  "DestinoCep": "30140071",
-  "ValorFrete": 23.72,
-  "Data": "2025-11-04 16:12"
-}
-```
-
-🐳 Docker — Execução Completa
-1) Crie a pasta de segredos (não vai para o Git)
-/secrets
-   jwt_key.txt
-   melhorenvio_token.txt
-
-2) Suba tudo:
-docker-compose up -d --build
-
-3) Acesse:
-Serviço	URL
-Swagger	http://localhost:5145/swagger
-
-RabbitMQ UI	http://localhost:15673
-
-### 🛠️ Tecnologias Utilizadas
+## 🛠️ **Tecnologias Utilizadas**
 
 <p align="center">
   <img src="https://img.shields.io/badge/.NET%208-512BD4?style=for-the-badge&logo=dotnet&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Entity%20Framework%20Core-6DB33F?style=for-the-badge&logo=ef&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white"/>
   <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white"/>
   <img src="https://img.shields.io/badge/RabbitMQ-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Docker-0db7ed?style=for-the-badge&logo=docker&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Docker%20Compose-384d54?style=for-the-badge&logo=docker&logoColor=white"/>
   <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black"/>
-  <img src="https://img.shields.io/badge/xUnit-5C2D91?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/Moq-000000?style=for-the-badge&logo=mocha&logoColor=white"/>
+  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens"/>
 </p>
 
 
+---
 
-Desenvolvido por:
+## 🧬 **Pré-Requisitos**
 
-Giancarlo Salomone
+Instale antes de rodar:
+
+| Ferramenta | Link |
+|---------|------|
+| Docker Desktop | https://www.docker.com/products/docker-desktop |
+| Node.js (v18+) | https://nodejs.org/en/download |
+| Angular CLI | `npm install -g @angular/cli` |
+| Git | https://git-scm.com/downloads |
+
+---
+
+## 🐳 **Rodando o Projeto (Back + DB + Rabbit)**
+
+```bash
+git clone https://github.com/Gian-UC/ApiConsultaDeFrete.git
+cd ApiConsultaDeFrete
+docker-compose up -d --build
+```
+
+Serviço	Porta	Acesso:
+API	5145 | http://localhost:5145/swagger|
+
+RabbitMQ | 15672	http://localhost:15672  (guest / guest) |
+
+MySQL	|  3306	
+
+
+## 🔐 **Token Melhor Envio**
+
+Abra docker-compose.yml e coloque seu token:
+
+MelhorEnvio__Token: "SEU_TOKEN_AQUI"
+
+## 🎮 **Rodando o Front-End**
+cd envio-rapido-ui
+npm install
+ng serve --open
+
+Acesse:
+
+http://localhost:4200
+
+🧪 Exemplo de Requisição
+```
+{
+  "origemCep": "01001000",
+  "destinoCep": "80010020",
+  "peso": 1,
+  "altura": 10,
+  "largura": 15,
+  "comprimento": 20
+}
+```
+
+## 🧪 **Testes Unitários**
+
+Os testes utilizam xUnit + Moq.
+
+cd EnvioRapidoApi.Tests
+dotnet test
+
+🛑 Parar Toda a Aplicação
+docker-compose down
+
+
+✅ Resumo do que você terá funcionando
+
+| Funcionalidade | Status |
+|---------------|--------|
+| Cálculo de frete via Melhor Envio | ✅ |
+| Persistência de envios no MySQL | ✅ |
+| Publicação de mensagens no RabbitMQ | ✅ |
+| Front-End consumindo API | ✅ |
+| Autenticação JWT | ✅ |
+| Containerização completa | ✅ |
+
