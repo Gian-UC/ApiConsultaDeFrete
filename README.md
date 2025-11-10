@@ -74,9 +74,10 @@ Abra docker-compose.yml e coloque seu token:
 MelhorEnvio__Token: "SEU_TOKEN_AQUI"
 
 ## 🎮 **Rodando o Front-End**
-cd envio-rapido-ui
-npm install
-ng serve --open
+
+| cd envio-rapido-ui |
+| npm install |
+| ng serve --open |
 
 Acesse:
 
