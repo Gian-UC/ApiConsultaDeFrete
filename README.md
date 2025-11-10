@@ -116,8 +116,8 @@ http://localhost:4200
 
 <img width="1870" height="927" alt="image" src="https://github.com/user-attachments/assets/d8cdc760-3fbe-405e-9ddc-6bd95c4e9a1a" />
 
-
-🧪 Exemplo de Requisição
+---
+🧪 Exemplo de Requisição no POST - Envios
 ```
 {
   "origemCep": "01001000",
@@ -133,11 +133,13 @@ http://localhost:4200
 
 Os testes utilizam xUnit + Moq.
 
-cd EnvioRapidoApi.Tests
-dotnet test
+- cd EnvioRapidoApi.Tests
+- dotnet test
+  
 
-🛑 Parar Toda a Aplicação
-docker-compose down
+## 🛑 **Parar Toda a Aplicação**
+
+- docker-compose down
 
 
 ✅ Resumo do que você terá funcionando
