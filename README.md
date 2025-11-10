@@ -68,7 +68,7 @@ Instala o WSL2
 ---
 
 - wsl --install
-- Instala Ubuntu na Microsoft Store.
+- Instala Ubuntu na Microsoft Store - Versão 22.04.5.
 
 Dentro do Ubuntu:
 
