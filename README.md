@@ -59,12 +59,43 @@ cd ApiConsultaDeFrete
 docker-compose up -d --build
 ```
 
+## **Caso não possua o docker desktop instalado:**
+
+💻 Como rodar sem Docker Desktop
+Windows (WSL2)
+
+Instala o WSL2
+---
+
+- wsl --install
+- Instala Ubuntu na Microsoft Store.
+
+Dentro do Ubuntu:
+
+- sudo apt update
+- sudo apt install docker.io docker-compose-plugin -y
+
+
+Dá permissão para rodar sem sudo:
+
+- sudo usermod -aG docker $USER
+
+Reinicia o terminal e pronto.
+
+Agora ela roda:
+
+- docker compose up -d
+
+
 Serviço	Porta	Acesso:
-API	5145 | http://localhost:5145/swagger|
+| API 5145 | http://localhost:5145/swagger | - |
+|------|-----------|--------|
 
-RabbitMQ | 15672	http://localhost:15672  (guest / guest) |
+| RabbitMQ | 15672	http://localhost:15672 | guest - login / senha - guest |
+|------|-----------|--------| 
 
-MySQL	|  3306	
+| MySQL | 3306 | - |
+|------|-----------|--------|
 
 
 ## 🔐 **Token Melhor Envio**
@@ -75,9 +106,9 @@ MelhorEnvio__Token: "SEU_TOKEN_AQUI"
 
 ## 🎮 **Rodando o Front-End**
 
-| cd envio-rapido-ui |
-| npm install |
-| ng serve --open |
+| cd envio-rapido-ui | npm install | ng serve --open |
+|------|-----------|--------|
+
 
 Acesse:
 
