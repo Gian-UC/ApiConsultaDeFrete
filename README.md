@@ -48,6 +48,7 @@ Instale antes de rodar:
 | Node.js (v18+) | https://nodejs.org/en/download |
 | Angular CLI | `npm install -g @angular/cli` |
 | Git | https://git-scm.com/downloads |
+| .NET SDK | https://dotnet.microsoft.com/pt-br/download |
 
 ---
 
