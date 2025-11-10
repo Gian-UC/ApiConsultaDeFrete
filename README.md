@@ -83,6 +83,9 @@ Acesse:
 
 http://localhost:4200
 
+<img width="1870" height="927" alt="image" src="https://github.com/user-attachments/assets/d8cdc760-3fbe-405e-9ddc-6bd95c4e9a1a" />
+
+
 🧪 Exemplo de Requisição
 ```
 {
