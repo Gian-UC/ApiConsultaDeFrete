@@ -1,0 +1,73 @@
+.container {
+  max-width: 420px;
+  background: var(--card);
+  margin: 50px auto;
+  padding: 30px;
+  border-radius: var(--radius);
+  box-shadow: 0 0 40px rgba(0, 238, 255, 0.15);
+  border: 1px solid rgba(0, 238, 255, 0.12);
+  animation: fade 0.4s ease;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+button {
+  width: 100%;
+  margin-top: 15px;
+  background: var(--primary) !important;
+  color: #000 !important;
+  font-weight: bold;
+  border-radius: var(--radius);
+  transition: var(--transition);
+  box-shadow: var(--primary-glow);
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(0, 238, 255, 0.8);
+}
+
+.resultado {
+  margin-top: 20px;
+  background: #0b1117;
+  padding: 15px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(0, 238, 255, 0.2);
+  text-align: center;
+}
+
+.terminal {
+  margin-top: 25px;
+  padding: 20px;
+  background: #05070a;
+  border-radius: var(--radius);
+  border: 1px solid rgba(0, 238, 255, 0.3);
+  font-family: 'JetBrains Mono', monospace;
+  white-space: pre-wrap;
+  color: var(--primary);
+  text-shadow: var(--primary-glow);
+  animation: flicker 0.3s infinite alternate;
+}
+
+.cursor {
+  color: var(--primary);
+  animation: blink 0.7s infinite steps(1);
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes flicker {
+  50% { opacity: 0.95; }
+  100% { opacity: 1; }
+}

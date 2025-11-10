@@ -1,0 +1,31 @@
+<div class="container">
+  <h1>🚚 Cálculo de Frete</h1>
+
+  <form (ngSubmit)="calcular()">
+    <mat-form-field appearance="fill">
+      <mat-label>CEP Origem</mat-label>
+      <input matInput [(ngModel)]="modelo.origemCep" name="origemCep" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>CEP Destino</mat-label>
+      <input matInput [(ngModel)]="modelo.destinoCep" name="destinoCep" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Peso (kg)</mat-label>
+      <input matInput type="number" [(ngModel)]="modelo.peso" name="peso" required>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary">Calcular</button>
+  </form>
+
+  <div *ngIf="resultado" class="resultado">
+    <p><strong>Valor do Frete:</strong> {{ resultado.valorFrete }}</p>
+  </div>
+</div>
+
+<div class="terminal" *ngIf="terminalText">
+  <span class="cursor">></span> {{ terminalText }}
+</div>
+

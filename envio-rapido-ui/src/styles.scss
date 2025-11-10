@@ -1,0 +1,31 @@
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/600.css";
+
+/* ==== Tema Hacker Noturno 💙😈 ==== */
+
+:root {
+  --bg: #0c0f14;
+  --card: #13171f;
+  --primary: #00eaff;
+  --primary-glow: 0 0 15px rgba(0, 238, 255, 0.6);
+  --text: #e8f1f2;
+  --text-dim: #9ba5b4;
+  --radius: 10px;
+  --transition: 0.3s ease;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+h1 {
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: var(--primary-glow);
+  color: var(--primary);
+}
